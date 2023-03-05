@@ -1,1 +1,1 @@
-# a-pragmatic-quick-guide-to-TDD
+# A pragmatic quick guide to TDD
