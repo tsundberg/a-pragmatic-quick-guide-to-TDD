@@ -37,7 +37,7 @@ public class TodoControllerTest {
 
         assertThat(actual).hasSize(1);
         assertThat(actual.get(0).user()).isEqualTo("Thomas");
-        assertThat(actual.get(0).chore()).isEqualTo("Buy cat food");
+        assertThat(actual.get(0).chore()).isEqualTo("Buy cat food-");
     }
 }
 ```
