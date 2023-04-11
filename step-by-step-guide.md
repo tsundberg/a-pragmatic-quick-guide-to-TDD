@@ -23,8 +23,7 @@ void should_add_a_task_to_buy_cat_food() {
     TodoRepository repository = new InMemoryTodoRepository();
     TodoService service = new TodoService(repository);
     TodoController controller = new TodoController(service);
-    UserRequest user = new UserRequest("Thomas");
-    TaskRequest task = new TaskRequest(user, "Buy cat food");
+    TaskRequest task = new TaskRequest("Thomas", "Buy cat food");
 
     controller.createNewTask(task);
     List<TaskResponse> actual = controller.getTasks(user);
@@ -77,14 +76,17 @@ public class TodoControllerIT {
 
     @Test
     void should_add_a_task_to_buy_minttu() {
-        // addTasks();
-        // getTasks();
+        TaskResponse expected = new TaskResponse("Malin", "Buy Minttu");
+        TaskRequest request = new TaskRequest("Malin", "Buy Minttu");
+
+        // addTasks(request);
+        // List<TaskResponse> actual = getTasks();
+
+        // assertThat(actualTask).containsExactly(expected)
     }
 
     /*
-    private void addTasks() {
-        UserRequest user = new UserRequest("Malin");
-        TaskRequest request = new TaskRequest(user, "Buy Minttu");
+    private void addTasks(TaskRequest request) {
         String path = "addTask";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient.bindToServer()
                 .baseUrl(baseUrl)
@@ -100,7 +102,7 @@ public class TodoControllerIT {
     */
 
     /*
-    private void getTasks() {
+    private List<TaskResponse> getTasks() {
         String path = "getTasks" + "/" + "Malin";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient
                 .bindToServer()
@@ -112,10 +114,11 @@ public class TodoControllerIT {
         WebTestClient.ResponseSpec actual = client.exchange();
 
         actual.expectStatus().isOk();
-        TaskResponse expected = new TaskResponse("Malin", "Buy Minttu");
         actual.expectBodyList(TaskResponse.class).value(actualTask ->
                 assertThat(actualTask).containsExactly(expected)
         );
+        
+        return the body
     }
     */
 }
@@ -148,7 +151,7 @@ Move the `InMemoryTodoRepository` to the production coe and annotate is a compon
 
 Now we got a 404. More annotations to the resque.
 
-and `createNewTask` with
+and enhance `createNewTask` with
 
 ```
 @PostMapping("/addTask")
@@ -468,4 +471,3 @@ from `/var/run/docker.sock` using the command
 ```
 sudo ln -s $HOME/.docker/run/docker.sock /var/run/docker.sock
 ```
-
