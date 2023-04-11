@@ -12,25 +12,33 @@ hidden somewhere in the middle of a big ball of mud.
 
 ## An endpoint for creating and getting tasks todo
 
-Create a `TodoControllerTest` that verifies that it is possible to
+Create a test class `src/test/java/se/thinkcode/todo/TodoControllerTest` that verifies that it is possible to
 
 * Create a task
 * Get a list of tasks
 
 ```
-@Test
-void should_add_a_task_to_buy_cat_food() {
-    TodoRepository repository = new InMemoryTodoRepository();
-    TodoService service = new TodoService(repository);
-    TodoController controller = new TodoController(service);
-    TaskRequest task = new TaskRequest("Thomas", "Buy cat food");
+import org.junit.jupiter.api.Test;
 
-    controller.createNewTask(task);
-    List<TaskResponse> actual = controller.getTasks(user);
+import java.util.List;
 
-    assertThat(actual).hasSize(1);
-    assertThat(actual.get(0).user()).isEqualTo("Thomas");
-    assertThat(actual.get(0).chore()).isEqualTo("Buy cat food");
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class TodoControllerTest {
+    @Test
+    void should_add_a_task_to_buy_cat_food() {
+        TodoRepository repository = new InMemoryTodoRepository();
+        TodoService service = new TodoService(repository);
+        TodoController controller = new TodoController(service);
+        TaskRequest task = new TaskRequest("Thomas", "Buy cat food");
+
+        controller.createNewTask(task);
+        List<TaskResponse> actual = controller.getTasks("Thomas");
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0).user()).isEqualTo("Thomas");
+        assertThat(actual.get(0).chore()).isEqualTo("Buy cat food");
+    }
 }
 ```
 
@@ -59,9 +67,21 @@ dependencies it needs.
 But we test drive stuff, so we will create an integration test that will connect to a running instance, connect to an
 endpoint for adding a task and an endpoint for getting the tasks.
 
-Let's start with an integration test like this:
+Let's start with an integration, `src/test/java/se/thinkcode/todo/TodoControllerIT`, test like this:
 
 ```
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TodoControllerIT {
     private String baseUrl;
@@ -77,16 +97,16 @@ public class TodoControllerIT {
     @Test
     void should_add_a_task_to_buy_minttu() {
         TaskResponse expected = new TaskResponse("Malin", "Buy Minttu");
-        TaskRequest request = new TaskRequest("Malin", "Buy Minttu");
+        TaskRequest request = new TaskRequest("Malin", "Buy Minttu-");
 
-        // addTasks(request);
-        // List<TaskResponse> actual = getTasks();
+        addTasks(request);
+        List<TaskResponse> actual = getTasks();
 
-        // assertThat(actualTask).containsExactly(expected)
+        assertThat(actual).containsExactly(expected);
     }
 
-    /*
     private void addTasks(TaskRequest request) {
+        /*
         String path = "addTask";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient.bindToServer()
                 .baseUrl(baseUrl)
@@ -98,11 +118,11 @@ public class TodoControllerIT {
         WebTestClient.ResponseSpec actual = client.exchange();
 
         actual.expectStatus().isCreated();
+        */
     }
-    */
 
-    /*
     private List<TaskResponse> getTasks() {
+        /*
         String path = "getTasks" + "/" + "Malin";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient
                 .bindToServer()
@@ -111,16 +131,18 @@ public class TodoControllerIT {
                 .get()
                 .uri(path);
 
-        WebTestClient.ResponseSpec actual = client.exchange();
+        WebTestClient.ResponseSpec actualResponse = client.exchange();
 
-        actual.expectStatus().isOk();
-        actual.expectBodyList(TaskResponse.class).value(actualTask ->
-                assertThat(actualTask).containsExactly(expected)
-        );
+        actualResponse.expectStatus().isOk();
+        EntityExchangeResult<List<TaskResponse>> result = actualResponse
+                .expectBodyList(TaskResponse.class)
+                .returnResult();
+
+        return result.getResponseBody();
+        */
         
-        return the body
+        return List.of();
     }
-    */
 }
 ```
 
@@ -141,13 +163,13 @@ Run the test
 
 Failure!
 
-Annotate the Service as a Component
+Annotate the Service as a `@Component`
 
 Re-run the tests
 
 Failure!
 
-Move the `InMemoryTodoRepository` to the production coe and annotate is a component.
+Annotate the `InMemoryTodoRepository` as a `@Component`.
 
 Now we got a 404. More annotations to the resque.
 
@@ -186,6 +208,12 @@ and `getTasks` with
 @GetMapping("/getTasks/{user}")
 ```
 
+And finally the argument with
+
+```
+@PathVariable
+```
+
 Commit with the message:
 
 ```
@@ -204,15 +232,68 @@ A large step with lots of moving parts
 
 We want to keep the code working so let's do this in small steps.
 
-Copy the `InMemoryTodoRepository` and call it `SqlTodoRepository`
+Add a test for the repository called `TodoRepositoryTest` like this:
 
-Move `InMemoryTodoRepository` to the test code and remove the `Component` annotation.
+```
+import org.junit.jupiter.api.Test;
 
-The tests should still pass. Run them and verify that they still pass.
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public abstract class TodoRepositoryTest {
+
+    TodoRepository repository;
+
+    @Test
+    void should_add_a_task_and_see_it() {
+        User user = new User("Emil");
+        Chore chore = new Chore("Must chop wood");
+        Task expected = new Task(user, chore);
+        Task task = new Task(user, chore);
+
+        repository.createNewTask(task);
+        List<Task> actual = repository.getTasks(user);
+
+        assertThat(actual).containsExactly(expected);
+    }
+}
+```
+
+This test class is abstract, it can't be executed.
+
+Add a runner for the in memory implementation like this
+
+```
+public class InMemoryTodoRepositoryTest extends TodoRepositoryTest {
+    public InMemoryTodoRepositoryTest() {
+        repository = new InMemoryTodoRepository();
+    }
+}
+```
+
+Copy the `InMemoryTodoRepository` and call it `SqlTodoRepository` to the production code
+
+Remove the `@Component` annotation from `InMemoryTodoRepository`
+
+All tests should still pass. Run them and verify that they still pass.
 
 Create a datasource, call it `DatasourceConfiguration` that will be used to talk to a PostgreSQL database using JDBI.
 
 ```
+import com.zaxxer.hikari.HikariDataSource;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.spi.JdbiPlugin;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+
+import javax.sql.DataSource;
+import java.util.List;
+
 @Configuration
 public class DatasourceConfiguration {
 
@@ -275,50 +356,6 @@ Run the tests and verify that this step works.
 
 The setup still works. But we are not using the database yet.
 
-Let's test drive the database implementation.
-
-Add a test for the repository called `TodoRepositoryTest` like this:
-
-```
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-public abstract class TodoRepositoryTest {
-
-    TodoRepository repository ;
-
-    @Test
-    void should_add_a_task_and_see_it() {
-        User user = new User("Emil");
-        Chore chore = new Chore("Must chop wood");
-        Task expected = new Task(user, chore);
-        Task task = new Task(user, chore);
-
-        repository.addTask(task);
-        List<Task> actual = repository.getTasks(user);
-
-        assertThat(actual).containsExactly(expected);
-    }
-}
-```
-
-This test class is abstract, it can't be executed.
-
-Add a runner for the in memory implementation like this
-
-```
-public class InMemoryTodoRepositoryTest extends TodoRepositoryTest {
-    public InMemoryTodoRepositoryTest() {
-        repository = new InMemoryTodoRepository();
-    }
-}
-```
-
-Run the repository test and see that it passes.
-
 We used the im memory implementation as master. If we now use the same tests and use it to drive the sql implementation,
 we have a fast and easy to change repository. And a harder to change but more persistent implementation. We will use the
 fast one as much as we can in the tests and the slow one verifying that everything works together.
@@ -355,7 +392,7 @@ However, we know that we don't use the database properly yet. Let's make sure we
 
 First step is to clear the current implementation.
 
-Then add a `TodoDao` as a constructor argument. This will be our way to talk to the databse.
+Then add a `TodoDao` as a constructor argument. This will be our way to talk to the database.
 
 Enable the `todoDao` bean in the database source configuration.
 
@@ -371,12 +408,12 @@ public class SqlTodoRepository implements TodoRepository {
     }
 
     @Override
-    public void addTask(Task task) {
+    public void createNewTask(Task task) {
         String id = UUID.randomUUID().toString();
         String owner = task.user().user();
         String chore = task.chore().chore();
 
-        todoDao.addTask(id, owner, chore);
+        todoDao.createNewTask(id, owner, chore);
     }
 
     @Override
@@ -421,7 +458,7 @@ Everything compiles but we are still failing. This time because we donät have a
 
 Let's use FlyWay to create a table.
 
-This is a two step process:
+This is a two-step process:
 
 Add a configuration for FlyWay in `application.properties`
 
@@ -453,7 +490,8 @@ return new Task(user, chore);
 
 Run the tests and see that it all passes.
 
-We now have a working todo list with a proper database support. We are in control over things like the database using SQL.
+We now have a working todo list with a proper database support. We are in control over things like the database using
+SQL.
 
 Commit with
 
