@@ -434,9 +434,9 @@ Let's implement the dao like this:
         insert into tasks (id, owner, chore)
         values (:id, :owner, :chore )
         """)
-void addTask(String id,
-             String owner,
-             String chore);
+void createNewTask(String id,
+                   String owner,
+                   String chore);
 ```
 
 and
