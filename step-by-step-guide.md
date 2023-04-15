@@ -182,30 +182,18 @@ and enhance `createNewTask` with
 
 Run the test again.
 
+Another failure
+
+annotate `getTasks` with
+
+```
+@GetMapping("/getTasks/{user}")
+```
+
 Finally, annotate the `createNewTask` with
 
 ```
 @RequestBody 
-```
-
-Re-run and see the test pass.
-
-However, we are only half way.
-
-Enable the rest of the test and re-run.
-
-Import
-
-```
-import static org.assertj.core.api.Assertions.assertThat;
-```
-
-Another failure
-
-and `getTasks` with
-
-```
-@GetMapping("/getTasks/{user}")
 ```
 
 And finally the argument with
