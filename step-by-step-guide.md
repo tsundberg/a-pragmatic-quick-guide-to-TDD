@@ -1,14 +1,6 @@
 # The implementation, step by step
 
-## The problem
-
-The goal is to show a pragmatic use of Test-Driven Development from a seemingly real life experience.
-
-This presents a few problem. We don't know the same domain. I have only some 30 minutes to show a way of working that
-works extremely well for me.
-
-I prefer, when possible, to do outside in development. This ensures that whatever I build is aimed for usage and not
-hidden somewhere in the middle of a big ball of mud.
+These are the distinct steps used when implementing this example.
 
 ## An endpoint for creating and getting tasks todo
 
