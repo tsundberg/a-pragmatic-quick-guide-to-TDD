@@ -34,7 +34,7 @@ public class TodoControllerTest {
 }
 ```
 
-### A service that that will connect the controller to the rest of the system
+### A service that will connect the controller to the rest of the system
 
 Create a TodoService that receives a domain object for creating a task and return a list of domain objects with task for
 a person.
@@ -98,7 +98,6 @@ public class TodoControllerIT {
     }
 
     private void addTasks(TaskRequest request) {
-        /*
         String path = "addTask";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient.bindToServer()
                 .baseUrl(baseUrl)
@@ -110,11 +109,9 @@ public class TodoControllerIT {
         WebTestClient.ResponseSpec actual = client.exchange();
 
         actual.expectStatus().isCreated();
-        */
     }
 
     private List<TaskResponse> getTasks() {
-        /*
         String path = "getTasks" + "/" + "Malin";
         WebTestClient.RequestHeadersSpec<?> client = WebTestClient
                 .bindToServer()
@@ -131,14 +128,9 @@ public class TodoControllerIT {
                 .returnResult();
 
         return result.getResponseBody();
-        */
-        
-        return List.of();
     }
 }
 ```
-
-Enable addTasks and run the test.
 
 It failed because the endpoint doesn't exist yet.
 
@@ -165,7 +157,7 @@ Annotate the `InMemoryTodoRepository` as a `@Component`.
 
 Now we got a 404. More annotations to the resque.
 
-and enhance `createNewTask` with
+Enhance `createNewTask` with
 
 ```
 @PostMapping("/addTask")
@@ -206,7 +198,7 @@ However, it is rather useless as it will not remember anything after a program r
 
 ## Add proper persistence support
 
-Last step today is to add proper persistence support.
+The Last step today is to add proper persistence support.
 
 A large step with lots of moving parts
 
@@ -336,9 +328,10 @@ Run the tests and verify that this step works.
 
 The setup still works. But we are not using the database yet.
 
-We used the im memory implementation as master. If we now use the same tests and use it to drive the sql implementation,
-we have a fast and easy to change repository. And a harder to change but more persistent implementation. We will use the
-fast one as much as we can in the tests and the slow one verifying that everything works together.
+We used the in memory implementation as a working reference. If we now use the same tests and use it to drive
+the sql implementation, we have a fast and easy to change repository. And a harder to change but more
+persistent implementation. We will use the fast one as much as we can in the tests and the slow one to verify
+that everything works together.
 
 Add a runner for running the repository tests using SQL `SqlTodoRepositoryIT`
 
@@ -370,7 +363,7 @@ Run the tests and see that they pass.
 
 However, we know that we don't use the database properly yet. Let's make sure we do.
 
-First step is to clear the current implementation.
+The first step is to clear the current implementation.
 
 Then add a `TodoDao` as a constructor argument. This will be our way to talk to the database.
 
