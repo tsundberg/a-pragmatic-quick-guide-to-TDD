@@ -427,19 +427,6 @@ void createNewTask(String id,
                    String chore);
 ```
 
-and
-
-```
-@SqlQuery("""
-        select owner, 
-               chore
-        from tasks
-        where owner = :owner
-        """)
-@RegisterRowMapper(TaskMapper.class)
-List<Task> getTasks(String owner);
-```
-
 Running the tests show us that we need to implement a mapper SQL to the domain.
 
 Everything compiles but we are still failing. This time because we donät have any tables in the database.
@@ -463,6 +450,19 @@ CREATE TABLE tasks
     owner varchar(16),
     chore varchar(256)
 );
+```
+
+Use this implementation for getting tasks
+
+```
+@SqlQuery("""
+        select owner, 
+               chore
+        from tasks
+        where owner = :owner
+        """)
+@RegisterRowMapper(TaskMapper.class)
+List<Task> getTasks(String owner);
 ```
 
 Running the tests shows us that there is a missing implementation in the mapper.
