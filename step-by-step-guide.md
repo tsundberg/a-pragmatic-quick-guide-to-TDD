@@ -360,16 +360,16 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("dev")
 public class SqlTodoRepositoryIT extends TodoRepositoryTest {
 
-    private final SqlTodoRepository SqlTodoRepository;
+    private final SqlTodoRepository sqlTodoRepository;
 
     @Autowired
     public SqlTodoRepositoryIT(SqlTodoRepository repository) {
-        SqlTodoRepository = repository;
+        sqlTodoRepository = repository;
     }
 
     @BeforeEach
     void setUp() {
-        repository = SqlTodoRepository;
+        repository = sqlTodoRepository;
     }
 }
 ```
