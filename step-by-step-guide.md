@@ -2,6 +2,12 @@
 
 These are the distinct steps used when implementing this example.
 
+You're expected to have
+
+* cloned this project
+* docker running
+* java 17 as the default Java version
+
 ## An endpoint for creating and getting tasks todo
 
 Create a test class `src/test/java/se/thinkcode/todo/TodoControllerTest` that verifies that it is possible to
@@ -326,7 +332,7 @@ Finally, annotate the two integration tests with
 
 Run the tests and verify that this step works.
 
-The setup still works. But we are not using the database yet.
+The setup still works. But we aren't using the database yet.
 
 We used the in memory implementation as a working reference. If we now use the same tests and use it to drive
 the sql implementation, we have a fast and easy to change repository. And a harder to change but more
@@ -414,7 +420,7 @@ void createNewTask(String id,
 
 Running the tests show us that we need to implement a mapper SQL to the domain.
 
-Everything compiles but we are still failing. This time because we donät have any tables in the database.
+Everything compiles but we're still failing. This time because we donät have any tables in the database.
 
 Let's use FlyWay to create a table.
 
@@ -463,7 +469,7 @@ return new Task(user, chore);
 
 Run the tests and see that it all passes.
 
-We now have a working todo list with a proper database support. We are in control over things like the database using
+We now have a working todo list with a proper database support. We're in control over things like the database using
 SQL.
 
 Commit with
