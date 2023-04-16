@@ -8,6 +8,11 @@ You're expected to have
 * docker running
 * java 17 as the default Java version
 
+Everything you need to complete this example should be below. It is the annotations Thomas uses when presenting this
+example. But then again, he wrote it, so some things might be obvious to him but not obvious to you. If that is the
+case,
+don't hesitate to reach out and get the unclear thing clarified.
+
 ## An endpoint for creating and getting tasks todo
 
 Create a test class `src/test/java/se/thinkcode/todo/TodoControllerTest` that verifies that it is possible to
