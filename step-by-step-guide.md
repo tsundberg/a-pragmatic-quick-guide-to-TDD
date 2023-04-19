@@ -423,9 +423,8 @@ void createNewTask(String id,
                    String chore);
 ```
 
-Running the tests show us that we need to implement a mapper SQL to the domain.
 
-Everything compiles but we're still failing. This time because we donät have any tables in the database.
+Everything compiles but we're still failing. This time because we don't have any tables in the database.
 
 Let's use FlyWay to create a table.
 
@@ -482,8 +481,6 @@ Commit with
 ```
 A proper database used during testing
 ```
-
-All annotations added have been verified with tests.
 
 We probably have a rather high test coverage percentage.
 
