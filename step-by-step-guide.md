@@ -230,13 +230,18 @@ public abstract class TodoRepositoryTest {
 
     @Test
     void should_add_a_task_and_see_it() {
-        User user = new User("Emil");
+        User user = new User("Emil-");
         Chore chore = new Chore("Must chop wood");
-        Task expected = new Task(user, chore);
-        Task task = new Task(user, chore);
+        Task sample = new Task(user, chore);
 
-        repository.createNewTask(task);
+        User expectedUser = new User("Emil");
+        Chore expectedChore = new Chore("Must chop wood");
+        Task expected = new Task(expectedUser, expectedChore);
+
+
+        repository.createNewTask(sample);
         List<Task> actual = repository.getTasks(user);
+
 
         assertThat(actual).containsExactly(expected);
     }
