@@ -4,9 +4,9 @@ These are the distinct steps used when implementing this example.
 
 You're expected to have
 
-* cloned this project
-* docker running
-* java 17 as the default Java version
+* Cloned this project
+* Docker running
+* Java 17 as the default Java version
 
 Everything you need to complete this example should be below. It is the annotations Thomas uses when presenting this
 example. But then again, he wrote it, so some things might be obvious to him but not obvious to you. If that is the
