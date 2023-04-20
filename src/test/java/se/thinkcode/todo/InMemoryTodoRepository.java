@@ -1,13 +1,10 @@
 package se.thinkcode.todo;
 
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class InMemoryTodoRepository implements TodoRepository {
     private final Map<User, List<Task>> database = new HashMap<>();
 
