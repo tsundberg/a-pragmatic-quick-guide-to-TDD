@@ -1,7 +1,12 @@
 package se.thinkcode.todo;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
+@RestController
+@RequestMapping(value = "/v1")
 public class TodoController {
     private final TodoService service;
 
@@ -9,12 +14,15 @@ public class TodoController {
         this.service = service;
     }
 
-    public void createNewTask(TaskRequest taskRequest) {
+    @PostMapping("/addTask")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewTask(@RequestBody TaskRequest taskRequest) {
         Task task = taskRequest.toModel();
         service.createNewTask(task);
     }
 
-    public List<TaskResponse> getTasks(String user) {
+    @GetMapping("/getTasks/{user}")
+    public List<TaskResponse> getTasks(@PathVariable String user) {
         List<Task> tasks = service.getTasks(new User(user));
         return TaskResponse.fromModel(tasks);
     }
