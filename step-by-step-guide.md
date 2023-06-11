@@ -8,7 +8,7 @@ You're expected to have
 * Docker running
 * Java 17 as the default Java version
 
-Everything you need to complete this example should be below. It is the annotations Thomas uses when presenting this
+Everything you need to complete this example should be below. It is the notes Thomas uses when presenting this
 example. But then again, he wrote it, so some things might be obvious to him but not obvious to you. If that is the
 case,
 don't hesitate to reach out and get the unclear thing clarified.
