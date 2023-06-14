@@ -25,3 +25,4 @@ The result of the presentation is available in different branches created after 
 ## Presentations
 
 * GeeCON, Krakow 2023
+* The Programmers, Cluj, 2023
